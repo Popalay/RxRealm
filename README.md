@@ -11,7 +11,7 @@ Utilities for using RxJava with Realm
 ```groovy
 compile 'com.github.popalay:rx-realm:latest-version'
 ```
-# Usage
+## Usage
 
 ```java
     public Observable<List<MessageResponse>> getMessages() {
