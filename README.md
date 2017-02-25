@@ -17,9 +17,10 @@ compile 'com.github.popalay:rx2-realm-kotlin:latest-version'
 ```
 ## Usage
 
+From Java
 ```java
     public Observable<List<MessageResponse>> getMessages() {
-        return RealmUtils.createObservableList(realm -> realm.where(MessageResponse.class)
+        return RxRealm.listenList(realm -> realm.where(MessageResponse.class)
                 .findAllSorted(MessageResponse.CREATED_AT, Sort.DESCENDING));
     }
 
@@ -30,10 +31,31 @@ compile 'com.github.popalay:rx2-realm-kotlin:latest-version'
     }
     
     private void saveMessages(List<MessageResponse> messages) {
-        RealmUtils.doTransactional(realm -> {
+        RxRealm.doTransactional(realm -> {
             realm.where(MessageResponse.class).findAll().deleteAllFromRealm();
             realm.copyToRealmOrUpdate(messages);
         });
+    }
+```
+
+From Kotlin
+```kotlin
+    fun getMessages(): Observable<List<MessageResponse>> {
+        return RxRealm.listenList{it.where(MessageResponse.java.class)
+                .findAllSorted(MessageResponse.CREATED_AT, Sort.DESCENDING)}
+    }
+
+    fun loadMessages(): Single<List<MessageResponse>> {
+        return mApi.messages()
+                .observeOn(Schedulers.computation())
+                .doOnSuccess(this::saveMessages)
+    }
+    
+    private fun saveMessages(messages: List<MessageResponse>) {
+        RxRealm.doTransactional{
+            it.where(MessageResponse.java.class).findAll().deleteAllFromRealm()
+            it.copyToRealmOrUpdate(messages)
+        }
     }
 ```
 
