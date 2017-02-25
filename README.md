@@ -1,4 +1,5 @@
 [![Download](https://api.bintray.com/packages/popalay/maven/RxRealm/images/download.svg) ](https://bintray.com/popalay/maven/RxRealm/_latestVersion)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RxRealm-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5323)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](https://github.com/Popalay/RxRealm/blob/master/LICENSE)
 
 # Rx Realm
@@ -13,6 +14,27 @@ compile 'com.github.popalay:rx-realm-kotlin:latest-version'
 
 compile 'com.github.popalay:rx2-realm:latest-version'
 compile 'com.github.popalay:rx2-realm-kotlin:latest-version'
+```
+## Usage
+
+```java
+    public Observable<List<MessageResponse>> getMessages() {
+        return RealmUtils.createObservableList(realm -> realm.where(MessageResponse.class)
+                .findAllSorted(MessageResponse.CREATED_AT, Sort.DESCENDING));
+    }
+
+    public Single<List<MessageResponse>> loadMessages() {
+        return mApi.messages()
+                .observeOn(Schedulers.computation())
+                .doOnSuccess(this::saveMessages);
+    }
+    
+    private void saveMessages(List<MessageResponse> messages) {
+        RealmUtils.doTransactional(realm -> {
+            realm.where(MessageResponse.class).findAll().deleteAllFromRealm();
+            realm.copyToRealmOrUpdate(messages);
+        });
+    }
 ```
 
 License
