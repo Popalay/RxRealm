@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
@@ -18,21 +19,40 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+buildscript {
+    ext.kotlin_version = '1.0.6'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     provided 'io.reactivex:rxjava:1.2.6'
     provided 'io.reactivex:rxandroid:1.2.1'
+    provided "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile 'junit:junit:4.12'
 }
 
 publish {
     groupId = 'com.github.popalay'
-    artifactId = 'rx-realm'
+    artifactId = 'rx-realm-kotlin'
     publishVersion = '1.0.1'
-    desc = 'Utilities for using RxJava with Realm'
+    desc = 'Utilities for using RxJava with Realm and Kotlin'
     licences = ['Apache-2.0']
-    uploadName = 'RxRealm'
+    uploadName = 'RxRealm-Kotlin'
     website = 'https://github.com/Popalay/RxRealm'
+}
+
+afterEvaluate {
+    tasks.findByPath(":library-kotlin:releaseAndroidJavadocs").enabled = false
 }
