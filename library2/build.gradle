@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply plugin: 'realm-android'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    provided "io.reactivex.rxjava2:rxjava:2.0.6"
+    provided "io.reactivex.rxjava2:rxandroid:2.0.1"
+    testCompile 'junit:junit:4.12'
+}
+
+publish {
+    groupId = 'com.github.popalay'
+    artifactId = 'rx2-realm'
+    publishVersion = '1.0.0'
+    desc = 'Utilities for using RxJava2 with Realm'
+    licences = ['Apache-2.0']
+    uploadName = 'Rx2Realm'
+    website = 'https://github.com/Popalay/RxRealm'
+}

@@ -21,12 +21,12 @@ import rx.functions.Cancellable;
 import rx.functions.Func0;
 import rx.functions.Func1;
 
-public final class RealmUtils {
+public final class RxRealm {
 
-    private RealmUtils() {
+    private RxRealm() {
     }
 
-    public static <T extends RealmObject> Observable<List<T>> createObservableList(final Func1<Realm, RealmResults<T>>
+    public static <T extends RealmObject> Observable<List<T>> listenList(final Func1<Realm, RealmResults<T>>
             query) {
         final HandlerThread dbHandler = createDbHandler();
         final Scheduler scheduler = AndroidSchedulers.from(dbHandler.getLooper());
@@ -61,7 +61,7 @@ public final class RealmUtils {
                 });
     }
 
-    public static <T extends RealmObject> Observable<T> createObservable(final Func1<Realm, T> query) {
+    public static <T extends RealmObject> Observable<T> listenElement(final Func1<Realm, T> query) {
         final HandlerThread dbHandler = createDbHandler();
         final Scheduler scheduler = AndroidSchedulers.from(dbHandler.getLooper());
         final AtomicReference<Realm> realmReference = new AtomicReference<>(null);
@@ -95,7 +95,7 @@ public final class RealmUtils {
                 });
     }
 
-    public static <T extends RealmObject> Single<List<T>> createSingleList(final Func1<Realm, RealmResults<T>> query) {
+    public static <T extends RealmObject> Single<List<T>> getList(final Func1<Realm, RealmResults<T>> query) {
         return Single.fromEmitter(new Action1<SingleEmitter<List<T>>>() {
             @Override
             public void call(SingleEmitter<List<T>> emitter) {
@@ -112,7 +112,7 @@ public final class RealmUtils {
         });
     }
 
-    public static <T extends RealmObject> Single<T> createSingle(final Func1<Realm, T> query) {
+    public static <T extends RealmObject> Single<T> getElement(final Func1<Realm, T> query) {
         return Single.fromEmitter(new Action1<SingleEmitter<T>>() {
             @Override
             public void call(SingleEmitter<T> emitter) {
