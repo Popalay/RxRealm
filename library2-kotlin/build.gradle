@@ -51,3 +51,7 @@ publish {
     uploadName = 'Rx2Realm-Koltin'
     website = 'https://github.com/Popalay/RxRealm'
 }
+
+afterEvaluate {
+    tasks.findByPath(":library-kotlin:releaseAndroidJavadocs").enabled = false
+}
