@@ -53,5 +53,5 @@ publish {
 }
 
 afterEvaluate {
-    tasks.findByPath(":library-kotlin:releaseAndroidJavadocs").enabled = false
+    tasks.findByPath(":library2-kotlin:releaseAndroidJavadocs").enabled = false
 }
