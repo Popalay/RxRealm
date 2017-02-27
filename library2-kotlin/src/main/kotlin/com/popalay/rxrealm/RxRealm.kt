@@ -14,7 +14,7 @@ import io.realm.RealmObject
 import io.realm.RealmResults
 import java.util.concurrent.atomic.AtomicReference
 
-class RxRealm private constructor() {
+public class RxRealm private constructor() {
 
     fun <T : RealmObject> listenList(query: (Realm) -> RealmResults<T>): Flowable<List<T>> {
         val dbHandler = createDbHandler()

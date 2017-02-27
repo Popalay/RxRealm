@@ -11,7 +11,7 @@ import rx.Single
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.atomic.AtomicReference
 
-class RxRealm private constructor() {
+public class RxRealm private constructor() {
 
     fun <T : RealmObject> listenList(query: (Realm) -> RealmResults<T>): Observable<List<T>> {
         val dbHandler = createDbHandler()
