@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 2
-        versionName "1.0.1"
+        versionCode project.versionCode
+        versionName project.versionName
     }
     buildTypes {
         release {
@@ -30,7 +30,7 @@ dependencies {
 publish {
     groupId = 'com.github.popalay'
     artifactId = 'rx2-realm'
-    publishVersion = '1.0.1'
+    publishVersion = project.versionName
     desc = 'Utilities for using RxJava2 with Realm'
     licences = ['Apache-2.0']
     uploadName = 'Rx2Realm'
