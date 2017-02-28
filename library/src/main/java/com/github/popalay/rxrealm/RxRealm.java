@@ -70,13 +70,14 @@ public final class RxRealm {
             public Observable<T> call() {
                 final Realm realm = Realm.getDefaultInstance();
                 realmReference.set(realm);
-                return query.call(realm).asObservable();
+                T result = query.call(realm);
+                return result != null ? result.<T>asObservable() : null;
             }
         })
                 .filter(new Func1<T, Boolean>() {
                     @Override
                     public Boolean call(T result) {
-                        return result.isLoaded() && result.isValid();
+                        return result != null && result.isLoaded() && result.isValid();
                     }
                 })
                 .map(new Func1<T, T>() {

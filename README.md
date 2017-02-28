@@ -41,7 +41,7 @@ From Java
 From Kotlin
 ```kotlin
     fun getMessages(): Observable<List<MessageResponse>> {
-        return RxRealm.listenList{it.where(MessageResponse.java.class)
+        return RxRealm.listenList{it.where(MessageResponse::class.java)
                 .findAllSorted(MessageResponse.CREATED_AT, Sort.DESCENDING)}
     }
 
@@ -53,7 +53,7 @@ From Kotlin
     
     private fun saveMessages(messages: List<MessageResponse>) {
         RxRealm.doTransactional{
-            it.where(MessageResponse.java.class).findAll().deleteAllFromRealm()
+            it.where(MessageResponse::class.java).findAll().deleteAllFromRealm()
             it.copyToRealmOrUpdate(messages)
         }
     }

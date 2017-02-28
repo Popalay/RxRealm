@@ -29,14 +29,14 @@ public class RxRealm private constructor() {
                 .doOnUnsubscribe { unsubscribeOnDbThread(dbHandler, realmReference.get()) }
     }
 
-    fun <T : RealmObject> listenElement(query: (Realm) -> T): Observable<T> {
+    fun <T : RealmObject> listenElement(query: (Realm) -> T?): Observable<T> {
         val dbHandler = createDbHandler()
         val scheduler = AndroidSchedulers.from(dbHandler.looper)
         val realmReference = AtomicReference<Realm>(null)
         return Observable.defer {
             val realm = Realm.getDefaultInstance()
             realmReference.set(realm)
-            query(realm).asObservable<T>()
+            query(realm)?.asObservable<T>()
         }
                 .filter { result -> result.isLoaded && result.isValid }
                 .map { result -> realmReference.get().copyFromRealm(result) }

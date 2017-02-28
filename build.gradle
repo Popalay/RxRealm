@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-project.ext.set("versionCode", 3)
-project.ext.set("versionName", "1.0.2")
+project.ext.set("versionCode", 4)
+project.ext.set("versionName", "1.0.3")
 
 buildscript {
     repositories {
