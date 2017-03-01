@@ -16,6 +16,7 @@ import io.reactivex.MaybeOnSubscribe;
 import io.reactivex.Scheduler;
 import io.reactivex.android.MainThreadDisposable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Cancellable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -143,6 +144,23 @@ public final class RxRealm {
                 public void execute(Realm realm) {
                     try {
                         transaction.accept(realm);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    public void generateObjectId(final RealmObject o, final BiConsumer<Realm, Long> transaction) {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Number num = realm.where(o.getClass()).max("id");
+                    long nextID = (num != null) ? num.longValue() + 1 : 0;
+                    try {
+                        transaction.accept(realm, nextID);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

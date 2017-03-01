@@ -17,6 +17,7 @@ import rx.SingleEmitter;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Action2;
 import rx.functions.Cancellable;
 import rx.functions.Func0;
 import rx.functions.Func1;
@@ -61,29 +62,28 @@ public final class RxRealm {
                 });
     }
 
-    public static <T extends RealmObject> Observable<T> listenElement(final Func1<Realm, T> query) {
+    public static <T extends RealmObject> Observable<T> listenElement(final Func1<Realm, RealmResults<T>> query) {
         final HandlerThread dbHandler = createDbHandler();
         final Scheduler scheduler = AndroidSchedulers.from(dbHandler.getLooper());
         final AtomicReference<Realm> realmReference = new AtomicReference<>(null);
-        return Observable.defer(new Func0<Observable<T>>() {
+        return Observable.defer(new Func0<Observable<RealmResults<T>>>() {
             @Override
-            public Observable<T> call() {
+            public Observable<RealmResults<T>> call() {
                 final Realm realm = Realm.getDefaultInstance();
                 realmReference.set(realm);
-                T result = query.call(realm);
-                return result != null ? result.<T>asObservable() : null;
+                return query.call(realm).asObservable();
             }
         })
-                .filter(new Func1<T, Boolean>() {
+                .filter(new Func1<RealmResults<T>, Boolean>() {
                     @Override
-                    public Boolean call(T result) {
-                        return result != null && result.isLoaded() && result.isValid();
+                    public Boolean call(RealmResults<T> result) {
+                        return result.isLoaded() && result.isValid();
                     }
                 })
-                .map(new Func1<T, T>() {
+                .map(new Func1<RealmResults<T>, T>() {
                     @Override
-                    public T call(T result) {
-                        return realmReference.get().copyFromRealm(result);
+                    public T call(RealmResults<T> result) {
+                        return !result.isEmpty() ? realmReference.get().copyFromRealm(result).get(0) : null;
                     }
                 })
                 .subscribeOn(scheduler)
@@ -140,6 +140,19 @@ public final class RxRealm {
                 @Override
                 public void execute(Realm realm) {
                     transaction.call(realm);
+                }
+            });
+        }
+    }
+
+    public void generateObjectId(final RealmObject o, final Action2<Realm, Long> transaction) {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Number num = realm.where(o.getClass()).max("id");
+                    long nextID = (num != null) ? num.longValue() + 1 : 0;
+                    transaction.call(realm, nextID);
                 }
             });
         }
