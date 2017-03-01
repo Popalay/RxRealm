@@ -145,7 +145,7 @@ public final class RxRealm {
         }
     }
 
-    public void generateObjectId(final RealmObject o, final Action2<Realm, Long> transaction) {
+    public static void generateObjectId(final RealmObject o, final Action2<Realm, Long> transaction) {
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
