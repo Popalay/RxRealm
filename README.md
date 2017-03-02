@@ -10,10 +10,8 @@ Utilities for using RxJava with Realm
 
 ```groovy
 compile 'com.github.popalay:rx-realm:latest-version'
-compile 'com.github.popalay:rx-realm-kotlin:latest-version'
 
 compile 'com.github.popalay:rx2-realm:latest-version'
-compile 'com.github.popalay:rx2-realm-kotlin:latest-version'
 ```
 ## Usage
 
