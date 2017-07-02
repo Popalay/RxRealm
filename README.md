@@ -49,8 +49,8 @@ From Kotlin
                 .doOnSuccess(this::saveMessages)
     }
     
-    private Completable saveMessages(messages: List<MessageResponse>) {
-        return RxRealm.doTransactional{
+    private saveMessages(messages: List<MessageResponse>): Completable {
+        return RxRealm.doTransactional {
                 it.where(MessageResponse::class.java).findAll().deleteAllFromRealm()
                 it.copyToRealmOrUpdate(messages)
             }
