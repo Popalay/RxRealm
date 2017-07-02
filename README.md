@@ -28,11 +28,11 @@ From Java
                 .doOnSuccess(this::saveMessages);
     }
     
-    private void saveMessages(List<MessageResponse> messages) {
-        RxRealm.doTransactional(realm -> {
-            realm.where(MessageResponse.class).findAll().deleteAllFromRealm();
-            realm.copyToRealmOrUpdate(messages);
-        });
+    private Completable saveMessages(List<MessageResponse> messages) {
+        return RxRealm.doTransactional(realm -> {
+                realm.where(MessageResponse.class).findAll().deleteAllFromRealm();
+                realm.copyToRealmOrUpdate(messages);
+            });
     }
 ```
 
@@ -49,11 +49,11 @@ From Kotlin
                 .doOnSuccess(this::saveMessages)
     }
     
-    private fun saveMessages(messages: List<MessageResponse>) {
-        RxRealm.doTransactional{
-            it.where(MessageResponse::class.java).findAll().deleteAllFromRealm()
-            it.copyToRealmOrUpdate(messages)
-        }
+    private Completable saveMessages(messages: List<MessageResponse>) {
+        return RxRealm.doTransactional{
+                it.where(MessageResponse::class.java).findAll().deleteAllFromRealm()
+                it.copyToRealmOrUpdate(messages)
+            }
     }
 ```
 
